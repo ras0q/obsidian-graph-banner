@@ -6,8 +6,7 @@ export default class MyPlugin extends Plugin {
 			this.app.workspace.on("file-open", async (file) => {
 				if (!file) return;
 
-				const fileView =
-					this.app.workspace.getActiveViewOfType(MarkdownView);
+				const fileView = this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (!fileView || fileView.file !== file) return;
 
 				const localGraphView = this.app.workspace
@@ -15,11 +14,7 @@ export default class MyPlugin extends Plugin {
 					.at(0)?.view;
 				if (!localGraphView) return;
 
-				for (
-					let i = 0;
-					localGraphView.getState().file !== file.path;
-					i++
-				) {
+				for (let i = 0; localGraphView.getState().file !== file.path; i++) {
 					await new Promise((resolve) => setTimeout(resolve, 500));
 					if (i === 10) {
 						console.error("localgraph not found");
@@ -27,8 +22,7 @@ export default class MyPlugin extends Plugin {
 					}
 				}
 
-				const noteHeader =
-					fileView.containerEl.querySelector(".inline-title");
+				const noteHeader = fileView.containerEl.querySelector(".inline-title");
 				const graphNode =
 					localGraphView.containerEl.querySelector(".view-content");
 				if (!noteHeader?.nextSibling || !graphNode) {
@@ -41,9 +35,9 @@ export default class MyPlugin extends Plugin {
 
 				noteHeader.parentElement?.insertBefore(
 					graphNode,
-					noteHeader.nextSibling
+					noteHeader.nextSibling,
 				);
-			})
+			}),
 		);
 	}
 }
