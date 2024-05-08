@@ -25,15 +25,14 @@ export default class MyPlugin extends Plugin {
 				const noteHeader = fileView.containerEl.querySelector(".inline-title");
 				const graphNode =
 					localGraphView.containerEl.querySelector(".view-content");
-				if (!noteHeader?.nextSibling || !graphNode) {
-					console.error("noteHeader or graphNode not found", {
-						noteHeader,
-						graphNode,
-					});
+				if (
+					!noteHeader?.parentElement ||
+					!noteHeader?.nextSibling ||
+					!graphNode
+				)
 					return;
-				}
 
-				noteHeader.parentElement?.insertBefore(
+				noteHeader.parentElement.insertBefore(
 					graphNode,
 					noteHeader.nextSibling,
 				);
