@@ -14,10 +14,14 @@ export default class GraphBannerPlugin extends Plugin {
 
 		this.registerEvent(
 			this.app.workspace.on("file-open", async (file) => {
-				if (!file) return;
+				if (!file) {
+					throw new Error("Failed to get file");
+				}
 
 				const fileView = this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (!fileView || fileView.file !== file) return;
+				if (!fileView || fileView.file !== file) {
+					throw new Error("Failed to get file view");
+				}
 
 				let localGraphView = this.app.workspace
 					.getLeavesOfType("localgraph")
@@ -29,37 +33,39 @@ export default class GraphBannerPlugin extends Plugin {
 					localGraphView = this.app.workspace
 						.getLeavesOfType("localgraph")
 						.at(0)?.view;
-					if (!localGraphView) return;
+					if (!localGraphView) {
+						throw new Error("Failed to get localgraph view");
+					}
 				}
 
 				for (let i = 0; localGraphView.getState().file !== file.path; i++) {
 					await new Promise((resolve) => setTimeout(resolve, 500));
 					if (i === 10) {
-						console.error("localgraph not found");
-						break;
+						throw new Error("Failed to load graph view");
 					}
 				}
 
-				const noteHeader = fileView.containerEl.querySelector(".inline-title");
-				const graphNode =
-					localGraphView.containerEl.querySelector<HTMLElement>(
-						".view-content",
-					);
-				if (
-					!noteHeader?.parentElement ||
-					!noteHeader?.nextSibling ||
-					!graphNode
-				) {
-					return;
+				const noteHeader = fileView.containerEl
+					.getElementsByClassName("inline-title")
+					.item(0);
+				const graphNode = localGraphView.containerEl
+					.getElementsByClassName("view-content")
+					.item(0);
+				if (!noteHeader?.parentElement || !noteHeader?.nextSibling) {
+					throw new Error("Failed to get note header");
+				}
+				if (!graphNode || !(graphNode instanceof HTMLElement)) {
+					throw new Error("Failed to get graph node");
 				}
 
 				graphNode.style.width = "auto";
 				graphNode.style.height = `${this.settings.bannerHeight}px`;
 				graphNode.style.marginBottom = "1rem";
 				if (!this.settings.displayGraphSettings) {
-					const graphControls =
-						graphNode.querySelector<HTMLElement>(".graph-controls");
-					if (graphControls) {
+					const graphControls = graphNode
+						.getElementsByClassName("graph-controls")
+						.item(0);
+					if (graphControls && graphControls instanceof HTMLElement) {
 						graphControls.style.display = "none";
 					}
 				}
