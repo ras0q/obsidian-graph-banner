@@ -27,4 +27,5 @@ console.log()
 console.log("git add package.json manifest.json versions.json");
 console.log(`git commit -m ":bookmark: ${targetVersion}"`);
 console.log(`git tag ${targetVersion}`);
-console.log("git push --follow-tags");
+console.log("git push");
+console.log("git push --tags");
