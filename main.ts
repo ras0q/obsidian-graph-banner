@@ -9,10 +9,18 @@ export default class MyPlugin extends Plugin {
 				const fileView = this.app.workspace.getActiveViewOfType(MarkdownView);
 				if (!fileView || fileView.file !== file) return;
 
-				const localGraphView = this.app.workspace
+				let localGraphView = this.app.workspace
 					.getLeavesOfType("localgraph")
 					.at(0)?.view;
-				if (!localGraphView) return;
+				if (!localGraphView) {
+					// @ts-ignore: App.commands is private function
+					await this.app.commands.executeCommandById("graph:open-local");
+					await new Promise((resolve) => setTimeout(resolve, 200));
+					localGraphView = this.app.workspace
+						.getLeavesOfType("localgraph")
+						.at(0)?.view;
+					if (!localGraphView) return;
+				}
 
 				for (let i = 0; localGraphView.getState().file !== file.path; i++) {
 					await new Promise((resolve) => setTimeout(resolve, 500));
@@ -29,13 +37,36 @@ export default class MyPlugin extends Plugin {
 					!noteHeader?.parentElement ||
 					!noteHeader?.nextSibling ||
 					!graphNode
-				)
+				) {
 					return;
+				}
 
 				noteHeader.parentElement.insertBefore(
 					graphNode,
 					noteHeader.nextSibling,
 				);
+			}),
+		);
+
+		this.registerEvent(
+			this.app.workspace.on("layout-change", async () => {
+				const localGraphView = this.app.workspace
+					.getLeavesOfType("localgraph")
+					.at(0)?.view;
+				if (!localGraphView) return;
+
+				const fileView = this.app.workspace.getLeavesOfType("markdown")
+				if (!fileView || fileView.length === 0) {
+					// FIXME: don't detach other localgraph views
+					localGraphView.leaf.detach()
+					return;
+				}
+
+				const graphTab =
+					localGraphView.containerEl.closest<HTMLElement>(".workspace-tabs");
+				if (graphTab) {
+					graphTab.style.display = "none";
+				}
 			}),
 		);
 	}
