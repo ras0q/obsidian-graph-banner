@@ -1,11 +1,10 @@
 {
 	"id": "graph-banner",
 	"name": "Graph Banner",
-	"version": "1.0.0",
-	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"version": "0.1.0",
+	"minAppVersion": "1.5.11",
+	"description": "Display a local graph view to the note header",
+	"author": "ras0q",
+	"authorUrl": "https://github.com/ras0q",
 	"isDesktopOnly": false
 }

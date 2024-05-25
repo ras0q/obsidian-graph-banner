@@ -1,16 +1,16 @@
 {
 	"name": "obsidian-graph-banner",
-	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"version": "0.1.0",
+	"description": "Display a local graph view to the note header",
 	"main": "main.js",
 	"scripts": {
-		"dev": "node esbuild.config.mjs",
-		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-		"version": "node version-bump.mjs && git add manifest.json versions.json",
+		"dev": "node ./scripts/esbuild.config.mjs",
+		"build": "tsc -noEmit -skipLibCheck && node ./scripts/esbuild.config.mjs production",
+		"version": "node ./scripts/version-bump.mjs",
 		"biome": "biome"
 	},
 	"keywords": [],
-	"author": "",
+	"author": "ras0q",
 	"license": "MIT",
 	"devDependencies": {
 		"@biomejs/biome": "1.7.3",
