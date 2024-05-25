@@ -11,11 +11,11 @@ const manifest = JSON.parse(
 );
 const { minAppVersion } = manifest;
 manifest.version = targetVersion;
-writeFileSync("manifest.json", JSON.stringify(manifest, null, "\t"));
+writeFileSync("manifest.json", `${JSON.stringify(manifest, null, "\t")}\n`);
 
 // update versions.json with target version and minAppVersion from manifest.json
 const versions = JSON.parse(
 	readFileSync(path.resolve(__dirname, "../versions.json"), "utf8"),
 );
 versions[targetVersion] = minAppVersion;
-writeFileSync("versions.json", JSON.stringify(versions, null, "\t"));
+writeFileSync("versions.json", `${JSON.stringify(versions, null, "\t")}\n`);
