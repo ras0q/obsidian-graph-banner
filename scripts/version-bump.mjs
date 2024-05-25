@@ -19,3 +19,12 @@ const versions = JSON.parse(
 );
 versions[targetVersion] = minAppVersion;
 writeFileSync("versions.json", `${JSON.stringify(versions, null, "\t")}\n`);
+
+// commit changes and tag with target version
+console.log(`Bumped version to ${targetVersion}`);
+console.log("Please commit and tag the changes to complete the process");
+console.log()
+console.log("git add package.json manifest.json versions.json");
+console.log(`git commit -m ":bookmark: ${targetVersion}"`);
+console.log(`git tag ${targetVersion}`);
+console.log("git push --follow-tags");
