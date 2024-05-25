@@ -3,6 +3,9 @@
 	"version": "0.1.0",
 	"description": "Display a local graph view to the note header",
 	"main": "main.js",
+	"engines": {
+		"node": "20.x"
+	},
 	"scripts": {
 		"dev": "node ./scripts/esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node ./scripts/esbuild.config.mjs production",
