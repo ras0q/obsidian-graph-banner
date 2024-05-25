@@ -1,6 +1,6 @@
 import { MarkdownView, Plugin } from "obsidian";
 
-export default class MyPlugin extends Plugin {
+export default class GraphBannerPlugin extends Plugin {
 	async onload() {
 		this.registerEvent(
 			this.app.workspace.on("file-open", async (file) => {
