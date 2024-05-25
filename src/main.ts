@@ -55,10 +55,10 @@ export default class MyPlugin extends Plugin {
 					.at(0)?.view;
 				if (!localGraphView) return;
 
-				const fileView = this.app.workspace.getLeavesOfType("markdown")
+				const fileView = this.app.workspace.getLeavesOfType("markdown");
 				if (!fileView || fileView.length === 0) {
 					// FIXME: don't detach other localgraph views
-					localGraphView.leaf.detach()
+					localGraphView.leaf.detach();
 					return;
 				}
 
