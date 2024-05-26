@@ -34,22 +34,22 @@ export default class GraphBannerPlugin extends Plugin {
 					throw new Error("Failed to get file view");
 				}
 
-				let localGraphView = this.app.workspace
+				let graphLeaf = this.app.workspace
 					.getLeavesOfType("localgraph")
-					.at(0)?.view;
-				if (!localGraphView) {
+					.filter((leaf) => leaf.view.containerEl.hasClass("for-graph-banner"))
+					.at(0);
+				if (!graphLeaf) {
 					// @ts-ignore: App.commands is private function
 					await this.app.commands.executeCommandById("graph:open-local");
 					await new Promise((resolve) => setTimeout(resolve, 200));
-					localGraphView = this.app.workspace
-						.getLeavesOfType("localgraph")
-						.at(0)?.view;
-					if (!localGraphView) {
-						throw new Error("Failed to get localgraph view");
+					graphLeaf = this.app.workspace.getLeavesOfType("localgraph").at(0);
+					if (!graphLeaf) {
+						throw new Error("Failed to get localgraph leaf");
 					}
+					graphLeaf.view.containerEl.addClass("for-graph-banner");
 				}
 
-				for (let i = 0; localGraphView.getState().file !== file.path; i++) {
+				for (let i = 0; graphLeaf.view.getState().file !== file.path; i++) {
 					await new Promise((resolve) => setTimeout(resolve, 500));
 					if (i === 10) {
 						throw new Error("Failed to load graph view");
@@ -59,13 +59,13 @@ export default class GraphBannerPlugin extends Plugin {
 				const noteHeader = fileView.containerEl
 					.getElementsByClassName("inline-title")
 					.item(0);
-				const graphNode = localGraphView.containerEl
+				const graphNode = graphLeaf.view.containerEl
 					.getElementsByClassName("view-content")
 					.item(0);
 				if (!noteHeader?.parentElement || !noteHeader?.nextSibling) {
 					throw new Error("Failed to get note header");
 				}
-				if (!graphNode || !(graphNode instanceof HTMLElement)) {
+				if (!graphNode) {
 					throw new Error("Failed to get graph node");
 				}
 
@@ -73,7 +73,7 @@ export default class GraphBannerPlugin extends Plugin {
 				const graphControls = graphNode
 					.getElementsByClassName("graph-controls")
 					.item(0);
-				if (graphControls && graphControls instanceof HTMLElement) {
+				if (graphControls) {
 					graphControls.toggleClass("is-close", true);
 				}
 
@@ -86,22 +86,17 @@ export default class GraphBannerPlugin extends Plugin {
 
 		this.registerEvent(
 			this.app.workspace.on("layout-change", async () => {
-				const localGraphView = this.app.workspace
+				const graphLeaves = this.app.workspace
 					.getLeavesOfType("localgraph")
-					.at(0)?.view;
-				if (!localGraphView) return;
+					.filter((leaf) => leaf.view.containerEl.hasClass("for-graph-banner"));
 
 				const fileView = this.app.workspace.getLeavesOfType("markdown");
-				if (!fileView || fileView.length === 0) {
-					// FIXME: don't detach other localgraph views
-					localGraphView.leaf.detach();
+				if (fileView && fileView.length > 0) {
 					return;
 				}
 
-				const graphTab =
-					localGraphView.containerEl.closest<HTMLElement>(".workspace-tabs");
-				if (graphTab) {
-					graphTab.style.display = "none";
+				for (const leaf of graphLeaves) {
+					leaf.detach();
 				}
 			}),
 		);
