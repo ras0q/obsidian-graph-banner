@@ -1,0 +1,20 @@
+/* https://github.com/mgmeyers/obsidian-style-settings */
+/* @settings
+
+name: Braph Banner
+id: braph-banner
+settings:
+  - id: banner-height
+    title: Banner Height
+    description: The height of the banner.
+    type: variable-number
+    default: 200
+    format: px
+
+*/
+
+.graph-banner-content {
+  width: auto;
+  height: var(--banner-height) !important;
+  margin-bottom: 16px;
+}
