@@ -15,3 +15,8 @@ This screenshot was generated using [s-blu/obsidian_dataview_example_vault](http
 
 1. **[Install](https://obsidian.md/plugins?id=graph-banner)** and **enable** the plugin.
 2. **Just open a note** and the graph will be displayed in the header!
+
+> [!TIP]
+>
+> - You can customize the banner appearance via [Style Settings](https://github.com/mgmeyers/obsidian-style-setting) plugin.
+> - You can save the local graph settings via [Sync Graph Settings](https://github.com/Xallt/sync-graph-settings) plugin.
