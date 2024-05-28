@@ -1,7 +1,6 @@
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
-import builtins from "builtin-modules";
 import esbuild from "esbuild";
 
 const banner = `/*
@@ -21,19 +20,6 @@ const context = await esbuild.context({
 	bundle: true,
 	external: [
 		"obsidian",
-		"electron",
-		"@codemirror/autocomplete",
-		"@codemirror/collab",
-		"@codemirror/commands",
-		"@codemirror/language",
-		"@codemirror/lint",
-		"@codemirror/search",
-		"@codemirror/state",
-		"@codemirror/view",
-		"@lezer/common",
-		"@lezer/highlight",
-		"@lezer/lr",
-		...builtins,
 	],
 	format: "cjs",
 	target: "es2018",
