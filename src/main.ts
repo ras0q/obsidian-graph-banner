@@ -1,17 +1,7 @@
 import { MarkdownView, Plugin } from "obsidian";
-import {
-	DEFAULT_SETTINGS,
-	SettingsTab,
-	type GraphBannerSettings,
-} from "./settings";
 
 export default class GraphBannerPlugin extends Plugin {
-	settings: GraphBannerSettings;
-
 	async onload() {
-		await this.loadSettings();
-		this.addSettingTab(new SettingsTab(this.app, this));
-
 		// apply style settings
 		// https://github.com/mgmeyers/obsidian-style-settings?tab=readme-ov-file#plugin-support
 		this.app.workspace.trigger("parse-style-settings");
@@ -100,13 +90,5 @@ export default class GraphBannerPlugin extends Plugin {
 				}
 			}),
 		);
-	}
-
-	async loadSettings() {
-		this.settings = Object.assign(DEFAULT_SETTINGS, await this.loadData());
-	}
-
-	async saveSettings() {
-		await this.saveData(this.settings);
 	}
 }
