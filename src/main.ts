@@ -1,10 +1,10 @@
+import { BrowserWindow } from "@electron/remote";
 import {
 	MarkdownView,
 	Plugin,
-	WorkspaceRoot,
 	type WorkspaceLeaf,
+	WorkspaceRoot,
 } from "obsidian";
-import { BrowserWindow } from "@electron/remote";
 
 export default class GraphBannerPlugin extends Plugin {
 	static graphBannerNodeClass = "graph-banner-content";
