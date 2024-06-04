@@ -1,9 +1,15 @@
-import { MarkdownView, Plugin, type WorkspaceLeaf } from "obsidian";
+import {
+	MarkdownView,
+	Plugin,
+	WorkspaceRoot,
+	type WorkspaceLeaf,
+} from "obsidian";
 import { BrowserWindow } from "@electron/remote";
 
 export default class GraphBannerPlugin extends Plugin {
+	static graphBannerNodeClass = "graph-banner-content";
+
 	graphWindow: Electron.BrowserWindow | null = null;
-	graphLeaf: WorkspaceLeaf | null = null;
 	graphNode: Element | null = null;
 
 	async onload() {
@@ -12,45 +18,62 @@ export default class GraphBannerPlugin extends Plugin {
 		this.app.workspace.trigger("parse-style-settings");
 
 		this.registerEvent(
-			this.app.workspace.on("file-open", async (file) => {
-				// NOTE: Initialize graph window and leaf
-				if (!this.graphWindow || !this.graphLeaf) {
-					const obsidianWindows = BrowserWindow.getAllWindows();
-					const graphWindow = obsidianWindows.find((win) =>
-						win.getTitle().startsWith("Graph"),
-					);
-					console.debug({
-						obsidianWindows: obsidianWindows.map((win) => win.getTitle()),
-						graphWindow,
-					});
+			this.app.workspace.on("window-open", async (workspaceWindow) => {
+				if (workspaceWindow.getContainer() instanceof WorkspaceRoot) return;
+				if (this.graphWindow && this.graphNode) return;
 
-					if (graphWindow) {
-						this.graphLeaf = this.getGraphLeaf();
-						this.graphWindow = graphWindow;
-					} else {
-						// @ts-ignore: App.commands is private function
-						await this.app.commands.executeCommandById("graph:open-local");
-						await new Promise((resolve) => setTimeout(resolve, 200));
-						const graphLeaf = this.getGraphLeaf();
+				// TODO: wait for the graph window to be ready
+				await new Promise((resolve) => setTimeout(resolve, 200));
 
-						// HACK: unlink from the original MarkdownView
-						graphLeaf.setGroup("graph-banner");
+				const obsidianWindows = BrowserWindow.getAllWindows();
+				const graphWindow = obsidianWindows.find((win) =>
+					win.getTitle().startsWith("Graph"),
+				);
+				console.debug("banner loaded", {
+					obsidianWindows: obsidianWindows.map((win) => win.getTitle()),
+					graphWindow,
+				});
 
-						this.app.workspace.moveLeafToPopout(graphLeaf);
-						graphLeaf.view.containerEl.focus();
+				if (graphWindow) {
+					this.graphWindow = graphWindow;
+				} else {
+					// HACK
+					// @ts-ignore: App.commands is private function
+					await this.app.commands.executeCommandById("graph:open-local");
+					await new Promise((resolve) => setTimeout(resolve, 200));
+					const graphLeaf = this.getGraphLeaf();
 
-						const focusedWindow = BrowserWindow.getFocusedWindow();
-						if (!focusedWindow) {
-							throw new Error("Failed to get focused window");
-						}
+					// HACK: unlink from the original MarkdownView
+					graphLeaf.setGroup("graph-banner");
 
-						this.graphLeaf = graphLeaf;
-						this.graphWindow = focusedWindow;
+					this.app.workspace.moveLeafToPopout(graphLeaf);
+					graphLeaf.view.containerEl.focus();
+
+					const focusedWindow = BrowserWindow.getFocusedWindow();
+					if (!focusedWindow) {
+						throw new Error("Failed to get focused window");
 					}
 
-					this.graphWindow.hide();
+					this.graphWindow = focusedWindow;
 				}
 
+				this.graphWindow.hide();
+
+				const graphNode = this.getGraphLeaf()
+					.view.containerEl.getElementsByClassName("view-content")
+					.item(0);
+				if (!graphNode) {
+					throw new Error("Failed to get graph node");
+				}
+
+				graphNode.addClass(GraphBannerPlugin.graphBannerNodeClass);
+
+				this.graphNode = graphNode;
+			}),
+		);
+
+		this.registerEvent(
+			this.app.workspace.on("file-open", async (file) => {
 				if (!file || file.extension !== "md") return;
 
 				let fileView: MarkdownView | null = null;
@@ -65,40 +88,15 @@ export default class GraphBannerPlugin extends Plugin {
 					throw new Error("Failed to get file view");
 				}
 
-				for (
-					let i = 0;
-					this.graphLeaf.view.getState().file !== file.path;
-					i++
-				) {
-					await new Promise((resolve) => setTimeout(resolve, 500));
-					if (i === 10) {
-						throw new Error("Failed to load graph view");
-					}
-				}
-
-				if (!this.graphNode) {
-					const graphNode = this.graphLeaf.view.containerEl
-						.getElementsByClassName("view-content")
-						.item(0);
-					if (!graphNode) {
-						throw new Error("Failed to get graph node");
-					}
-
-					graphNode.addClass("graph-banner-content");
-
-					this.graphNode = graphNode;
-				}
-
-				if (fileView.containerEl.contains(this.graphNode)) {
+				if (!this.graphNode || fileView.containerEl.contains(this.graphNode)) {
 					return;
 				}
 
+				// NOTE: close graph controls
 				const graphControls = this.graphNode
 					.getElementsByClassName("graph-controls")
 					.item(0);
-				if (graphControls) {
-					graphControls.toggleClass("is-close", true);
-				}
+				graphControls?.toggleClass("is-close", true);
 
 				const noteHeader = fileView.containerEl
 					.getElementsByClassName("inline-title")
@@ -119,20 +117,25 @@ export default class GraphBannerPlugin extends Plugin {
 		console.log("Unloading GraphBannerPlugin");
 
 		this.graphNode?.removeClass("graph-banner-content");
-		this.graphLeaf?.detach();
 		this.graphWindow?.closable && this.graphWindow.close();
 
 		this.graphNode = null;
-		this.graphLeaf = null;
 		this.graphWindow = null;
 	}
 
-	private getGraphLeaf() {
-		const graphLeaf = this.app.workspace.getLeavesOfType("localgraph").at(0);
-		if (!graphLeaf) {
+	private getGraphLeaf(): WorkspaceLeaf {
+		const graphLeaves = this.app.workspace
+			.getLeavesOfType("localgraph")
+			.filter((leaf) =>
+				leaf.view.containerEl.getElementsByClassName(
+					GraphBannerPlugin.graphBannerNodeClass,
+				),
+			);
+		console.debug("graphLeaves", graphLeaves);
+		if (graphLeaves.length === 0) {
 			throw new Error("Failed to get localgraph leaf");
 		}
 
-		return graphLeaf;
+		return graphLeaves[0];
 	}
 }
