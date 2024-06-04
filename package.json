@@ -16,12 +16,12 @@
 	"author": "ras0q",
 	"license": "MIT",
 	"devDependencies": {
-		"@biomejs/biome": "1.7.3",
-		"@types/node": "16.18.98",
-		"builtin-modules": "3.3.0",
+		"@biomejs/biome": "1.8.0",
+		"@types/node": "20.14.1",
+		"builtin-modules": "4.0.0",
 		"esbuild": "0.21.4",
 		"tslib": "2.6.2",
-		"typescript": "4.7.4"
+		"typescript": "5.4.5"
 	},
 	"dependencies": {
 		"@electron/remote": "2.1.2",
