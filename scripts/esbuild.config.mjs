@@ -1,6 +1,7 @@
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
+import builtins from "builtin-modules";
 import esbuild from "esbuild";
 
 const banner = `/*
@@ -18,9 +19,7 @@ const context = await esbuild.context({
 	},
 	entryPoints: [path.resolve(__dirname, "../src/main.ts")],
 	bundle: true,
-	external: [
-		"obsidian",
-	],
+	external: ["obsidian", "@electron/remote", ...builtins],
 	format: "cjs",
 	target: "es2018",
 	logLevel: "info",

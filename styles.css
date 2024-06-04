@@ -18,8 +18,3 @@ settings:
   height: var(--banner-height) !important;
   margin-bottom: 16px;
 }
-
-/* FIXME: this style hide the toggle button for right sidebar */
-.workspace-tabs:has(.workspace-leaf-content.for-graph-banner) {
-  display: none;
-}
