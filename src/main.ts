@@ -20,60 +20,67 @@ export default class GraphBannerPlugin extends Plugin {
 		this.registerEvent(
 			this.app.workspace.on("window-open", async (workspaceWindow) => {
 				if (workspaceWindow.getContainer() instanceof WorkspaceRoot) return;
-				if (this.graphWindow && this.graphNode) return;
 
 				// TODO: wait for the graph window to be ready
 				await new Promise((resolve) => setTimeout(resolve, 200));
 
-				const obsidianWindows = BrowserWindow.getAllWindows();
-				const graphWindow = obsidianWindows.find((win) =>
-					win.getTitle().startsWith("Graph"),
-				);
-				console.debug("banner loaded", {
-					obsidianWindows: obsidianWindows.map((win) => win.getTitle()),
-					graphWindow,
-				});
-
-				if (graphWindow) {
-					this.graphWindow = graphWindow;
-				} else {
-					// HACK
-					// @ts-ignore: App.commands is private function
-					await this.app.commands.executeCommandById("graph:open-local");
-					const graphLeaf = await this.getGraphLeaf();
-
-					// HACK: unlink from the original MarkdownView
-					graphLeaf.setGroup("graph-banner");
-
-					this.app.workspace.moveLeafToPopout(graphLeaf);
-					graphLeaf.view.containerEl.focus();
-
-					const focusedWindow = BrowserWindow.getFocusedWindow();
-					if (!focusedWindow) {
-						throw new Error("Failed to get focused window");
-					}
-
-					this.graphWindow = focusedWindow;
+				const focusedWindow = BrowserWindow.getFocusedWindow();
+				if (!focusedWindow) {
+					throw new Error("Failed to get focused window");
 				}
 
-				this.graphWindow.hide();
-
-				const graphNode = (await this.getGraphLeaf()).view.containerEl
-					.getElementsByClassName("view-content")
-					.item(0);
-				if (!graphNode) {
-					throw new Error("Failed to get graph node");
+				const title = focusedWindow.getTitle();
+				if (title.startsWith("Graph")) {
+					console.debug(`hide graph window: ${title}`);
+					focusedWindow.hide();
 				}
 
-				graphNode.addClass(GraphBannerPlugin.graphBannerNodeClass);
-
-				this.graphNode = graphNode;
+				this.graphWindow = focusedWindow;
 			}),
 		);
 
 		this.registerEvent(
 			this.app.workspace.on("file-open", async (file) => {
 				if (!file || file.extension !== "md") return;
+
+				if (!this.graphWindow) {
+					// TODO: wait for the graph window to be ready
+					await new Promise((resolve) => setTimeout(resolve, 200));
+
+					const obsidianWindows = BrowserWindow.getAllWindows();
+					const graphWindow = obsidianWindows.find((win) =>
+						win.getTitle().startsWith("Graph"),
+					);
+					console.debug("graph window", {
+						obsidianWindows: obsidianWindows.map((win) => win.getTitle()),
+						graphWindow,
+					});
+
+					if (!graphWindow) {
+						// HACK
+						// @ts-ignore: App.commands is private function
+						await this.app.commands.executeCommandById("graph:open-local");
+						const graphLeaf = await this.getGraphLeaf();
+
+						// HACK: unlink from the original MarkdownView
+						graphLeaf.setGroup("graph-banner");
+
+						this.app.workspace.moveLeafToPopout(graphLeaf);
+					}
+				}
+
+				if (!this.graphNode) {
+					const graphNode = (await this.getGraphLeaf()).view.containerEl
+						.getElementsByClassName("view-content")
+						.item(0);
+					if (!graphNode) {
+						throw new Error("Failed to get graph node");
+					}
+
+					graphNode.addClass(GraphBannerPlugin.graphBannerNodeClass);
+
+					this.graphNode = graphNode;
+				}
 
 				const fileView = await this.tryUntilNonNull(() =>
 					this.app.workspace.getActiveViewOfType(MarkdownView),
