@@ -4,7 +4,6 @@ import { MarkdownView, Platform, Plugin, WorkspaceRoot } from "obsidian";
 export default class GraphBannerPlugin extends Plugin {
 	static graphBannerNodeClass = "graph-banner-content";
 
-	needOpenGraphWindow = true;
 	onUnload: (() => void)[] = [];
 	graphNode: Element | null = null;
 
@@ -40,7 +39,6 @@ export default class GraphBannerPlugin extends Plugin {
 						mainWindow.focus();
 					}
 
-					this.needOpenGraphWindow = false;
 					this.onUnload.push(() => {
 						graphWindow.closable && graphWindow.close();
 					});
@@ -59,34 +57,20 @@ export default class GraphBannerPlugin extends Plugin {
 					throw new Error("Failed to get file view");
 				}
 
-				if (this.needOpenGraphWindow) {
+				let graphLeaf = this.getGraphLeaf();
+				if (!graphLeaf) {
+					graphLeaf = await this.openNewGraphLeaf();
+
 					if (Platform.isDesktopApp) {
-						// TODO: wait for the graph window to be ready
-						await new Promise((resolve) => setTimeout(resolve, 200));
-
-						const obsidianWindows = BrowserWindow.getAllWindows();
-						const graphWindow = obsidianWindows.find((win) =>
-							win.getTitle().startsWith("Graph"),
-						);
-
-						if (!graphWindow) {
-							const graphLeaf = await this.openNewGraphLeaf();
-							this.app.workspace.moveLeafToPopout(graphLeaf);
-						}
-					} else {
-						const graphLeaf = this.getGraphLeaf();
-						if (!graphLeaf) {
-							await this.openNewGraphLeaf();
-							// FIXME: hide empty graph leaf
-							this.app.workspace.setActiveLeaf(fileView.leaf);
-						}
+						this.app.workspace.moveLeafToPopout(graphLeaf);
 					}
+
+					// FIXME: hide empty graph leaf
+					this.app.workspace.setActiveLeaf(fileView.leaf);
 				}
 
 				if (!this.graphNode) {
-					const graphNode = (
-						await this.tryUntilNonNull(() => this.getGraphLeaf())
-					).view.containerEl
+					const graphNode = graphLeaf.view.containerEl
 						.getElementsByClassName("view-content")
 						.item(0);
 					if (!graphNode) {
