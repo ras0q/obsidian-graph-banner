@@ -4,10 +4,12 @@ import { MarkdownView, Platform, Plugin, WorkspaceRoot } from "obsidian";
 export default class GraphBannerPlugin extends Plugin {
 	static graphBannerNodeClass = "graph-banner-content";
 
-	onUnload: (() => void)[] = [];
+	unloadListeners: (() => void)[] = [];
 	graphNode: Element | null = null;
 
 	async onload() {
+		console.log("Loading GraphBannerPlugin");
+
 		// NOTE: https://github.com/mgmeyers/obsidian-style-settings?tab=readme-ov-file#plugin-support
 		this.app.workspace.trigger("parse-style-settings");
 
@@ -39,7 +41,7 @@ export default class GraphBannerPlugin extends Plugin {
 						mainWindow.focus();
 					}
 
-					this.onUnload.push(() => {
+					this.unloadListeners.push(() => {
 						graphWindow.closable && graphWindow.close();
 					});
 				}),
@@ -108,14 +110,14 @@ export default class GraphBannerPlugin extends Plugin {
 		);
 	}
 
-	async unload() {
+	async onunload() {
 		console.log("Unloading GraphBannerPlugin");
 
 		this.graphNode?.removeClass(GraphBannerPlugin.graphBannerNodeClass);
 		this.graphNode = null;
 
-		for (const handleUnload of this.onUnload) {
-			handleUnload();
+		for (const unloadCallback of this.unloadListeners) {
+			unloadCallback();
 		}
 	}
 
