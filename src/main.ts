@@ -1,3 +1,4 @@
+import { BrowserWindow } from "@electron/remote"; // FIXME: import only if Platform.isDesktopApp is true
 import { MarkdownView, Platform, Plugin, WorkspaceRoot } from "obsidian";
 
 export default class GraphBannerPlugin extends Plugin {
@@ -19,8 +20,6 @@ export default class GraphBannerPlugin extends Plugin {
 					// TODO: wait for the graph window to be ready
 					await new Promise((resolve) => setTimeout(resolve, 200));
 
-					const BrowserWindow = (await import("@electron/remote"))
-						.BrowserWindow;
 					const focusedWindow = BrowserWindow.getFocusedWindow();
 					if (!focusedWindow) {
 						throw new Error("Failed to get focused window");
@@ -56,8 +55,6 @@ export default class GraphBannerPlugin extends Plugin {
 						// TODO: wait for the graph window to be ready
 						await new Promise((resolve) => setTimeout(resolve, 200));
 
-						const BrowserWindow = (await import("@electron/remote"))
-							.BrowserWindow;
 						const obsidianWindows = BrowserWindow.getAllWindows();
 						const graphWindow = obsidianWindows.find((win) =>
 							win.getTitle().startsWith("Graph"),
