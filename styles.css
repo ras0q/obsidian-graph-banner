@@ -6,10 +6,9 @@ id: braph-banner
 settings:
   - id: banner-height
     title: Banner Height
-    description: The height of the banner.
-    type: variable-number
-    default: 200
-    format: px
+    description: The height of the banner. (e.g. 20vh, 200px)
+    type: variable-text
+    default: 20vh
 
 */
 
