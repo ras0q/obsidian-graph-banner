@@ -1,10 +1,5 @@
 import { BrowserWindow } from "@electron/remote";
-import {
-	MarkdownView,
-	Plugin,
-	type WorkspaceLeaf,
-	WorkspaceRoot,
-} from "obsidian";
+import { MarkdownView, Plugin, WorkspaceRoot } from "obsidian";
 
 export default class GraphBannerPlugin extends Plugin {
 	static graphBannerNodeClass = "graph-banner-content";
@@ -13,8 +8,7 @@ export default class GraphBannerPlugin extends Plugin {
 	graphNode: Element | null = null;
 
 	async onload() {
-		// apply style settings
-		// https://github.com/mgmeyers/obsidian-style-settings?tab=readme-ov-file#plugin-support
+		// NOTE: https://github.com/mgmeyers/obsidian-style-settings?tab=readme-ov-file#plugin-support
 		this.app.workspace.trigger("parse-style-settings");
 
 		this.registerEvent(
@@ -31,7 +25,7 @@ export default class GraphBannerPlugin extends Plugin {
 
 				const title = focusedWindow.getTitle();
 				if (title.startsWith("Graph")) {
-					console.debug(`hide graph window: ${title}`);
+					console.debug(`hide graph window: ${title}`);  
 					focusedWindow.hide();
 				}
 
@@ -118,7 +112,7 @@ export default class GraphBannerPlugin extends Plugin {
 	async unload() {
 		console.log("Unloading GraphBannerPlugin");
 
-		this.graphNode?.removeClass("graph-banner-content");
+		this.graphNode?.removeClass(GraphBannerPlugin.graphBannerNodeClass);
 		this.graphWindow?.closable && this.graphWindow.close();
 
 		this.graphNode = null;
