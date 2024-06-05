@@ -20,20 +20,29 @@ export default class GraphBannerPlugin extends Plugin {
 					// TODO: wait for the graph window to be ready
 					await new Promise((resolve) => setTimeout(resolve, 200));
 
-					const focusedWindow = BrowserWindow.getFocusedWindow();
-					if (!focusedWindow) {
-						throw new Error("Failed to get focused window");
-					}
+					const obsidianWindows = BrowserWindow.getAllWindows();
+					const mainWindow = await this.tryUntilNonNull(() =>
+						obsidianWindows.find((win) => win.id === 1),
+					);
+					const graphWindow = await this.tryUntilNonNull(() =>
+						obsidianWindows.find((win) => win.getTitle().startsWith("Graph")),
+					);
+					console.debug("Obsidian windows", {
+						obsidianWindows: obsidianWindows.map((win) => win.getTitle()),
+						mainWindow,
+						graphWindow,
+					});
 
-					const title = focusedWindow.getTitle();
+					const title = graphWindow.getTitle();
 					if (title.startsWith("Graph")) {
 						console.debug(`hide graph window: ${title}`);
-						focusedWindow.hide();
+						graphWindow.hide();
+						mainWindow.focus();
 					}
 
 					this.needOpenGraphWindow = false;
 					this.onUnload.push(() => {
-						focusedWindow.closable && focusedWindow.close();
+						graphWindow.closable && graphWindow.close();
 					});
 				}),
 			);
@@ -59,10 +68,6 @@ export default class GraphBannerPlugin extends Plugin {
 						const graphWindow = obsidianWindows.find((win) =>
 							win.getTitle().startsWith("Graph"),
 						);
-						console.debug("graph window", {
-							obsidianWindows: obsidianWindows.map((win) => win.getTitle()),
-							graphWindow,
-						});
 
 						if (!graphWindow) {
 							const graphLeaf = await this.openNewGraphLeaf();
@@ -72,6 +77,7 @@ export default class GraphBannerPlugin extends Plugin {
 						const graphLeaf = this.getGraphLeaf();
 						if (!graphLeaf) {
 							await this.openNewGraphLeaf();
+							// FIXME: hide empty graph leaf
 							this.app.workspace.setActiveLeaf(fileView.leaf);
 						}
 					}
