@@ -106,6 +106,29 @@ export default class GraphBannerPlugin extends Plugin {
 					graphNode,
 					noteHeader.nextSibling,
 				);
+
+				this.registerEvent(
+					this.app.workspace.on("layout-change", async () => {
+						const fileView =
+							this.app.workspace.getActiveViewOfType(MarkdownView);
+						if (!fileView) return;
+
+						const noteHeader = await this.tryUntilNonNull(() =>
+							fileView.containerEl
+								.getElementsByClassName("inline-title")
+								.item(0),
+						);
+						if (!noteHeader.parentElement || !noteHeader.nextSibling) {
+							throw new Error("Failed to get note header");
+						}
+						if (noteHeader.parentElement.contains(graphNode)) return;
+
+						noteHeader.parentElement.insertBefore(
+							graphNode,
+							noteHeader.nextSibling,
+						);
+					}),
+				);
 			}),
 		);
 	}
