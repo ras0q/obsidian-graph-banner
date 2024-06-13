@@ -22,17 +22,21 @@ export default class GraphBannerPlugin extends Plugin {
 					await new Promise((resolve) => setTimeout(resolve, 200));
 
 					const obsidianWindows = BrowserWindow.getAllWindows();
-					const mainWindow = await this.tryUntilNonNull(() =>
-						obsidianWindows.find((win) => win.id === 1),
+					const hiddenGraphWindow = obsidianWindows.find(
+						(win) => win.getTitle().startsWith("Graph") && !win.isVisible(),
 					);
-					const graphWindow = await this.tryUntilNonNull(() =>
-						obsidianWindows.find((win) => win.getTitle().startsWith("Graph")),
+					if (hiddenGraphWindow) return;
+
+					const mainWindow = obsidianWindows.find((win) => win.id === 1);
+					const graphWindow = obsidianWindows.find((win) =>
+						win.getTitle().startsWith("Graph"),
 					);
 					console.debug("Obsidian windows", {
 						obsidianWindows: obsidianWindows.map((win) => win.getTitle()),
 						mainWindow,
 						graphWindow,
 					});
+					if (!mainWindow || !graphWindow) return;
 
 					const title = graphWindow.getTitle();
 					if (title.startsWith("Graph")) {
