@@ -17,7 +17,7 @@
 	"license": "MIT",
 	"devDependencies": {
 		"@biomejs/biome": "1.8.2",
-		"@types/node": "20.14.7",
+		"@types/node": "20.14.8",
 		"builtin-modules": "4.0.0",
 		"esbuild": "0.21.5",
 		"tslib": "2.6.3",
