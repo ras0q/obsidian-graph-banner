@@ -19,7 +19,7 @@
 		"@biomejs/biome": "1.8.3",
 		"@types/node": "20.14.9",
 		"builtin-modules": "4.0.0",
-		"esbuild": "0.21.5",
+		"esbuild": "0.23.0",
 		"tslib": "2.6.3",
 		"typescript": "5.5.3"
 	},
