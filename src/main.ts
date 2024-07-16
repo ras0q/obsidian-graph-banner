@@ -27,23 +27,12 @@ export default class GraphBannerPlugin extends Plugin {
 					);
 					if (hiddenGraphWindow) return;
 
-					const mainWindow = obsidianWindows.find((win) => win.id === 1);
 					const graphWindow = obsidianWindows.find((win) =>
 						win.getTitle().startsWith("Graph"),
 					);
-					console.debug("Obsidian windows", {
-						obsidianWindows: obsidianWindows.map((win) => win.getTitle()),
-						mainWindow,
-						graphWindow,
-					});
-					if (!mainWindow || !graphWindow) return;
+					if (!graphWindow) return;
 
-					const title = graphWindow.getTitle();
-					if (title.startsWith("Graph")) {
-						console.debug(`hide graph window: ${title}`);
-						graphWindow.hide();
-						mainWindow.focus();
-					}
+					graphWindow.hide();
 
 					this.unloadListeners.push(() => {
 						graphWindow.closable && graphWindow.close();
