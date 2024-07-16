@@ -27,7 +27,7 @@ export default class GraphBannerPlugin extends Plugin {
 				);
 				if (!graphWindow) return;
 
-				this.graphWindowID = graphWindow.id
+				this.graphWindowID = graphWindow.id;
 				graphWindow.hide();
 
 				this.unloadListeners.push(() => {
