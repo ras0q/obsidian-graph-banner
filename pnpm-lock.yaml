@@ -22,8 +22,8 @@ importers:
         specifier: 1.8.3
         version: 1.8.3
       '@types/node':
-        specifier: 20.9.0
-        version: 20.9.0
+        specifier: 20.9.5
+        version: 20.9.5
       esbuild:
         specifier: 0.23.1
         version: 0.23.1
@@ -271,8 +271,8 @@ packages:
   '@types/keyv@3.1.4':
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
 
-  '@types/node@20.9.0':
-    resolution: {integrity: sha512-nekiGu2NDb1BcVofVcEKMIwzlx4NjHlcjhoxxKBNLtz15Y1z7MYf549DFvkHSId02Ax6kGwWntIBPC3l/JZcmw==}
+  '@types/node@20.9.5':
+    resolution: {integrity: sha512-Uq2xbNq0chGg+/WQEU0LJTSs/1nKxz6u1iemLcGomkSnKokbW1fbLqc3HOqCf2JP7KjlL4QkS7oZZTrOQHQYgQ==}
 
   '@types/responselike@1.0.3':
     resolution: {integrity: sha512-H/+L+UkTV33uf49PH5pCAUBVPNj2nDBXTN+qS1dOwyyg24l3CcicicCA7ca+HMvJBZcFgl5r8e+RR6elsb4Lyw==}
@@ -705,7 +705,7 @@ snapshots:
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 20.9.0
+      '@types/node': 20.9.5
       '@types/responselike': 1.0.3
 
   '@types/codemirror@5.60.8':
@@ -718,15 +718,15 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 20.9.0
+      '@types/node': 20.9.5
 
-  '@types/node@20.9.0':
+  '@types/node@20.9.5':
     dependencies:
       undici-types: 5.26.5
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 20.9.0
+      '@types/node': 20.9.5
 
   '@types/tern@0.23.9':
     dependencies:
@@ -734,7 +734,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 20.9.0
+      '@types/node': 20.9.5
     optional: true
 
   boolean@3.2.0:
@@ -788,7 +788,7 @@ snapshots:
   electron@32.0.2:
     dependencies:
       '@electron/get': 2.0.3
-      '@types/node': 20.9.0
+      '@types/node': 20.9.5
       extract-zip: 2.0.1
     transitivePeerDependencies:
       - supports-color
