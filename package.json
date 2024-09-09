@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-graph-banner",
-	"version": "1.3.1",
+	"version": "1.3.2",
 	"description": "Display a local graph view to the note header",
 	"main": "main.js",
 	"engines": {
