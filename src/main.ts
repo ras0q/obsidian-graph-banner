@@ -1,6 +1,5 @@
-import { BrowserWindow } from "@electron/remote"; // FIXME: import only if Platform.isDesktopApp is true
 import ignore from "ignore";
-import { MarkdownView, Platform, Plugin, WorkspaceRoot } from "obsidian";
+import { MarkdownView, Plugin, type WorkspaceLeaf } from "obsidian";
 import { DEFAULT_SETTINGS, SettingTab, type Settings } from "./settings";
 
 export default class GraphBannerPlugin extends Plugin {
@@ -9,8 +8,8 @@ export default class GraphBannerPlugin extends Plugin {
 	settings: Settings;
 
 	unloadListeners: (() => void)[] = [];
+	graphLeaf: WorkspaceLeaf | null = null;
 	graphNode: Element | null = null;
-	graphWindowID: number | null = null;
 
 	async onload() {
 		await this.loadSettings();
@@ -18,56 +17,6 @@ export default class GraphBannerPlugin extends Plugin {
 
 		// NOTE: https://github.com/mgmeyers/obsidian-style-settings?tab=readme-ov-file#plugin-support
 		this.app.workspace.trigger("parse-style-settings");
-
-		if (Platform.isDesktopApp) {
-			const hideGraphWindow = () => {
-				const obsidianWindows = BrowserWindow.getAllWindows();
-				const hiddenGraphWindow = obsidianWindows.find(
-					(win) => win.id === this.graphWindowID && !win.isVisible(),
-				);
-				if (hiddenGraphWindow) return;
-
-				const graphWindow = obsidianWindows.find((win) =>
-					win.getTitle().startsWith("Graph"),
-				);
-				if (!graphWindow) return;
-
-				this.graphWindowID = graphWindow.id;
-				graphWindow.hide();
-
-				this.unloadListeners.push(() => {
-					graphWindow.closable && graphWindow.close();
-				});
-			};
-			this.addCommand({
-				id: "hide-window",
-				name: "Hide the local window used for banner",
-				callback: hideGraphWindow,
-			});
-
-			const showGraphWindows = () => {
-				const obsidianWindows = BrowserWindow.getAllWindows();
-				for (const win of obsidianWindows) {
-					!win.isVisible() && win.show();
-				}
-			};
-			this.addCommand({
-				id: "show-hidden-windows",
-				name: "Show hidden local graph windows",
-				callback: showGraphWindows,
-			});
-
-			this.registerEvent(
-				this.app.workspace.on("window-open", async (workspaceWindow) => {
-					if (workspaceWindow.getContainer() instanceof WorkspaceRoot) return;
-
-					// TODO: wait for the graph window to be ready
-					await new Promise((resolve) => setTimeout(resolve, 200));
-
-					hideGraphWindow();
-				}),
-			);
-		}
 
 		this.registerEvent(
 			this.app.workspace.on("file-open", async (file) => {
@@ -86,20 +35,19 @@ export default class GraphBannerPlugin extends Plugin {
 					throw new Error("Failed to get file view");
 				}
 
-				let graphLeaf = this.getGraphLeaf();
-				if (!graphLeaf) {
-					graphLeaf = await this.openNewGraphLeaf();
-
-					if (Platform.isDesktopApp) {
-						this.app.workspace.moveLeafToPopout(graphLeaf);
-					}
-
-					// FIXME: hide empty graph leaf
-					this.app.workspace.setActiveLeaf(fileView.leaf);
+				if (!this.graphLeaf) {
+					this.graphLeaf = await this.createNewLeafForGraph();
 				}
 
+				this.graphLeaf.setViewState({
+					type: "localgraph",
+					state: {
+						file: file.path,
+					},
+				});
+
 				if (!this.graphNode) {
-					const graphNode = graphLeaf.view.containerEl
+					const graphNode = this.graphLeaf.view.containerEl
 						.getElementsByClassName("view-content")
 						.item(0);
 					if (!graphNode) {
@@ -163,6 +111,8 @@ export default class GraphBannerPlugin extends Plugin {
 	async onunload() {
 		console.log("Unloading GraphBannerPlugin");
 
+		this.graphLeaf?.detach();
+		this.graphLeaf = null;
 		this.graphNode?.removeClass(GraphBannerPlugin.graphBannerNodeClass);
 		this.graphNode = null;
 
@@ -186,25 +136,16 @@ export default class GraphBannerPlugin extends Plugin {
 		throw new Error(`Failed to get result: ${f.toString().slice(0, 100)}...`);
 	}
 
-	private getGraphLeaf() {
-		return this.app.workspace
-			.getLeavesOfType("localgraph")
-			.find((leaf) =>
-				leaf.view.containerEl.getElementsByClassName(
-					GraphBannerPlugin.graphBannerNodeClass,
-				),
-			);
-	}
+	private async createNewLeafForGraph() {
+		const leaf = this.app.workspace.getLeaf("tab");
+		await leaf.setViewState({
+			type: "localgraph",
+		});
 
-	private async openNewGraphLeaf() {
-		// HACK
-		// @ts-ignore: App.commands is private function
-		await this.app.commands.executeCommandById("graph:open-local");
-		const graphLeaf = await this.tryUntilNonNull(() => this.getGraphLeaf());
+		// HACK: Don't detach(). Remove only child DOM manually.
+		// @ts-ignore WorkspaceTabs.removeChild is private method
+		leaf.parent.removeChild(leaf);
 
-		// HACK: unlink from the original MarkdownView
-		graphLeaf.setGroup("graph-banner");
-
-		return graphLeaf;
+		return leaf;
 	}
 }
