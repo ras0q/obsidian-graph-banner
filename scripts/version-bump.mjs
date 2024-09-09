@@ -24,7 +24,7 @@ writeFileSync("versions.json", `${JSON.stringify(versions, null, "\t")}\n`);
 console.log(`Bumped version to ${targetVersion}`);
 console.log("Please commit and tag the changes to complete the process");
 console.log();
-console.log("npm install");
+console.log("pnpm install");
 console.log(
 	"git add package.json package-lock.json manifest.json versions.json",
 );
