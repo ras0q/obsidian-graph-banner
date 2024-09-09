@@ -14,7 +14,7 @@ settings:
 
 .graph-banner-content {
   width: auto;
-  height: var(--banner-height) !important;
+  height: var(--banner-height, 20vh) !important;
   margin-bottom: 16px;
 }
 
