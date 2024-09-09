@@ -12,18 +12,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4
         with:
-          node-version-file: "package.json"
-      - run: npm install
-      - run: npm run build
+          node-version-file: ".node-version"
+          cache: "pnpm"
+      - run: pnpm install
+      - run: pnpm build
 
   biome:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4
         with:
-          node-version-file: "package.json"
-      - run: npm install
-      - run: npm run biome -- check .
+          node-version-file: ".node-version"
+          cache: "pnpm"
+      - run: pnpm install
+      - run: pnpm biome check .
