@@ -17,3 +17,7 @@ settings:
   height: var(--banner-height) !important;
   margin-bottom: 16px;
 }
+
+.graph-banner-content.hidden {
+  display: none;
+}

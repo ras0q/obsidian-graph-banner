@@ -1,15 +1,20 @@
 import { BrowserWindow } from "@electron/remote"; // FIXME: import only if Platform.isDesktopApp is true
+import ignore from "ignore";
 import { MarkdownView, Platform, Plugin, WorkspaceRoot } from "obsidian";
+import { DEFAULT_SETTINGS, SettingTab, type Settings } from "./settings";
 
 export default class GraphBannerPlugin extends Plugin {
 	static graphBannerNodeClass = "graph-banner-content";
+
+	settings: Settings;
 
 	unloadListeners: (() => void)[] = [];
 	graphNode: Element | null = null;
 	graphWindowID: number | null = null;
 
 	async onload() {
-		console.log("Loading GraphBannerPlugin");
+		await this.loadSettings();
+		this.addSettingTab(new SettingTab(this.app, this));
 
 		// NOTE: https://github.com/mgmeyers/obsidian-style-settings?tab=readme-ov-file#plugin-support
 		this.app.workspace.trigger("parse-style-settings");
@@ -67,6 +72,12 @@ export default class GraphBannerPlugin extends Plugin {
 		this.registerEvent(
 			this.app.workspace.on("file-open", async (file) => {
 				if (!file || file.extension !== "md") return;
+
+				const isIgnoredPath = ignore()
+					.add(this.settings.ignore)
+					.ignores(file.path);
+				this.graphNode?.toggleClass("hidden", isIgnoredPath);
+				if (isIgnoredPath) return;
 
 				const fileView = await this.tryUntilNonNull(() =>
 					this.app.workspace.getActiveViewOfType(MarkdownView),
@@ -158,6 +169,10 @@ export default class GraphBannerPlugin extends Plugin {
 		for (const unloadCallback of this.unloadListeners) {
 			unloadCallback();
 		}
+	}
+
+	private async loadSettings() {
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
 	}
 
 	private async tryUntilNonNull<T>(f: () => T, interval = 200, maxCount = 10) {
