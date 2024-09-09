@@ -10,7 +10,7 @@ const ctx = await context({
 	entryPoints: [path.resolve(__dirname, "../src/main.ts")],
 	minify: isProduction,
 	bundle: true,
-	external: ["obsidian", "@electron/remote"],
+	external: ["obsidian"],
 	format: "cjs",
 	target: "es6",
 	logLevel: "info",
