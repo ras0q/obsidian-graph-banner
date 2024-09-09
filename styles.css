@@ -18,6 +18,6 @@ settings:
   margin-bottom: 16px;
 }
 
-.graph-banner-content.hidden {
+.hidden {
   display: none;
 }
