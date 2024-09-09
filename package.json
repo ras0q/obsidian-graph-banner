@@ -20,7 +20,7 @@
 		"@types/node": "20.16.5",
 		"esbuild": "0.23.1",
 		"tslib": "2.7.0",
-		"typescript": "5.5.4"
+		"typescript": "5.6.2"
 	},
 	"dependencies": {
 		"ignore": "^5.3.2",
