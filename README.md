@@ -18,3 +18,4 @@ This screenshot was generated using [s-blu/obsidian_dataview_example_vault](http
 >
 > - You can customize the banner appearance via [Style Settings](https://github.com/mgmeyers/obsidian-style-setting) plugin.
 > - You can save the local graph settings via [Sync Graph Settings](https://github.com/Xallt/sync-graph-settings) plugin.
+>   - **Graph settings synchronizatoin is only reflected the first time you open a note**, so reload the app if you change those settings.
