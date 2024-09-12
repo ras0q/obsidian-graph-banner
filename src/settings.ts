@@ -1,12 +1,14 @@
-import { type App, PluginSettingTab, Setting } from "obsidian";
+import { type App, Notice, PluginSettingTab, Setting } from "obsidian";
 import type GraphBannerPlugin from "./main";
 
 export interface Settings {
 	ignore: string[];
+	timeToRemoveLeaf: number;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
 	ignore: [],
+	timeToRemoveLeaf: 500,
 };
 
 export class SettingTab extends PluginSettingTab {
@@ -35,6 +37,28 @@ export class SettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.ignore.join("\n"))
 					.onChange(async (value) => {
 						this.plugin.settings.ignore = value.split("\n");
+						await this.plugin.saveData(this.plugin.settings);
+					}),
+			);
+
+		new Setting(containerEl)
+			.setName("Advanced: Time [ms] to remove the graph leaf for the banner")
+			.setDesc(
+				"This plugin temporarily create a local graph leaf to display in the banner of the notes.\n" +
+					'If you want to do something when the local graph opened, for example by using the "Sync Graph Settings" plugin, set this time settings.\n' +
+					"If set to 0ms, the leaf is immediately erased.\n" +
+					"To reflect this setting, please reload the app.",
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder("500")
+					.setValue(String(this.plugin.settings.timeToRemoveLeaf))
+					.onChange(async (value) => {
+						const time = Number(value);
+						if (value === "" || Number.isNaN(time) || time < 0) {
+							new Notice("Please specify a valid number.");
+						}
+						this.plugin.settings.timeToRemoveLeaf = time;
 						await this.plugin.saveData(this.plugin.settings);
 					}),
 			);

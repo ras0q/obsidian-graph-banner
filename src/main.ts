@@ -144,7 +144,10 @@ export default class GraphBannerPlugin extends Plugin {
 
 		// HACK: Don't detach(). Remove only child DOM manually.
 		// @ts-ignore WorkspaceTabs.removeChild is private method
-		leaf.parent.removeChild(leaf);
+		const removeChild = () => leaf.parent.removeChild(leaf);
+		this.settings.timeToRemoveLeaf > 0
+			? setTimeout(removeChild, this.settings.timeToRemoveLeaf)
+			: removeChild();
 
 		return leaf;
 	}

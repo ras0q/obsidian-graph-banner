@@ -25,9 +25,7 @@ console.log(`Bumped version to ${targetVersion}`);
 console.log("Please commit and tag the changes to complete the process");
 console.log();
 console.log("pnpm install");
-console.log(
-	"git add package.json package-lock.json manifest.json versions.json",
-);
+console.log("git add package.json pnpm-lock.yaml manifest.json versions.json");
 console.log(`git commit -m ":bookmark: ${targetVersion}"`);
 console.log(`git tag ${targetVersion}`);
 console.log("git push");
