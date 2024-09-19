@@ -16,7 +16,7 @@
 	"author": "ras0q",
 	"license": "MIT",
 	"devDependencies": {
-		"@biomejs/biome": "1.8.3",
+		"@biomejs/biome": "1.9.1",
 		"@types/node": "20.16.5",
 		"esbuild": "0.23.1",
 		"tslib": "2.7.0",
