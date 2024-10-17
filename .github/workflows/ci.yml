@@ -28,3 +28,9 @@ jobs:
       - run: deno check .
       - run: deno fmt --check .
       - run: deno lint .
+
+  block-fixup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
+      - uses: 13rac1/block-fixup-merge-action@v2.0.0
