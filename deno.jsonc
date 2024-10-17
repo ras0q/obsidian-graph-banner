@@ -1,0 +1,25 @@
+{
+	"compilerOptions": {
+		"lib": [
+			"deno.window",
+			"dom"
+		]
+	},
+	"exclude": [
+		"node_modules",
+		"main.js"
+	],
+	"fmt": {
+		"useTabs": true
+	},
+	"imports": {
+		"esbuild": "npm:esbuild@0.24.0",
+		"ignore": "npm:ignore@6.0.2",
+		"obsidian": "npm:obsidian@1.7.2"
+	},
+	"nodeModulesDir": "auto",
+	"tasks": {
+		"build": "esbuild ./src/main.ts --bundle --external:obsidian --format=cjs --minify --target=es6 --outfile=./main.js",
+		"dev": "esbuild ./src/main.ts --watch --bundle --external:obsidian --format=cjs --target=es6 --sourcemap=inline --outfile=./main.js"
+	}
+}
