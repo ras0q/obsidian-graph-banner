@@ -1,17 +1,17 @@
 import ignore from "ignore";
 import { MarkdownView, Plugin, type WorkspaceLeaf } from "obsidian";
-import { DEFAULT_SETTINGS, SettingTab, type Settings } from "./settings";
+import { DEFAULT_SETTINGS, type Settings, SettingTab } from "./settings.ts";
 
 export default class GraphBannerPlugin extends Plugin {
 	static graphBannerNodeClass = "graph-banner-content";
 
-	settings: Settings;
+	settings: Settings = DEFAULT_SETTINGS;
 
 	unloadListeners: (() => void)[] = [];
 	graphLeaf: WorkspaceLeaf | null = null;
 	graphNode: Element | null = null;
 
-	async onload() {
+	override async onload() {
 		await this.loadSettings();
 		this.addSettingTab(new SettingTab(this.app, this));
 
@@ -22,14 +22,15 @@ export default class GraphBannerPlugin extends Plugin {
 			this.app.workspace.on("file-open", async (file) => {
 				if (!file || file.extension !== "md") return;
 
-				const isIgnoredPath = ignore()
+				const isIgnoredPath = ignore
+					.default() // FIXME: ignore() is not a function?
 					.add(this.settings.ignore)
 					.ignores(file.path);
 				this.graphNode?.toggleClass("hidden", isIgnoredPath);
 				if (isIgnoredPath) return;
 
 				const fileView = await this.tryUntilNonNull(() =>
-					this.app.workspace.getActiveViewOfType(MarkdownView),
+					this.app.workspace.getActiveViewOfType(MarkdownView)
 				);
 				if (fileView.file !== file) {
 					throw new Error("Failed to get file view");
@@ -47,9 +48,9 @@ export default class GraphBannerPlugin extends Plugin {
 				});
 
 				if (!this.graphNode) {
-					const graphNode = this.graphLeaf.view.containerEl
-						.getElementsByClassName("view-content")
-						.item(0);
+					const graphNode = this.graphLeaf.view.containerEl.find(
+						".view-content",
+					);
 					if (!graphNode) {
 						throw new Error("Failed to get graph node");
 					}
@@ -65,14 +66,10 @@ export default class GraphBannerPlugin extends Plugin {
 				}
 
 				// NOTE: close graph controls
-				const graphControls = graphNode
-					.getElementsByClassName("graph-controls")
-					.item(0);
+				const graphControls = graphNode.find(".graph-controls");
 				graphControls?.toggleClass("is-close", true);
 
-				const noteHeader = fileView.containerEl
-					.getElementsByClassName("inline-title")
-					.item(0);
+				const noteHeader = fileView.containerEl.find(".inline-title");
 				if (!noteHeader?.parentElement || !noteHeader?.nextSibling) {
 					throw new Error("Failed to get note header");
 				}
@@ -84,14 +81,13 @@ export default class GraphBannerPlugin extends Plugin {
 
 				this.registerEvent(
 					this.app.workspace.on("layout-change", async () => {
-						const fileView =
-							this.app.workspace.getActiveViewOfType(MarkdownView);
+						const fileView = this.app.workspace.getActiveViewOfType(
+							MarkdownView,
+						);
 						if (!fileView) return;
 
 						const noteHeader = await this.tryUntilNonNull(() =>
-							fileView.containerEl
-								.getElementsByClassName("inline-title")
-								.item(0),
+							fileView.containerEl.find(".inline-title")
 						);
 						if (!noteHeader.parentElement || !noteHeader.nextSibling) {
 							throw new Error("Failed to get note header");
@@ -108,7 +104,7 @@ export default class GraphBannerPlugin extends Plugin {
 		);
 	}
 
-	async onunload() {
+	override onunload() {
 		console.log("Unloading GraphBannerPlugin");
 
 		this.graphLeaf?.detach();

@@ -1,5 +1,5 @@
 import { type App, Notice, PluginSettingTab, Setting } from "obsidian";
-import type GraphBannerPlugin from "./main";
+import type GraphBannerPlugin from "./main.ts";
 
 export interface Settings {
 	ignore: string[];
@@ -38,7 +38,7 @@ export class SettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.ignore = value.split("\n");
 						await this.plugin.saveData(this.plugin.settings);
-					}),
+					})
 			);
 
 		new Setting(containerEl)
@@ -60,7 +60,7 @@ export class SettingTab extends PluginSettingTab {
 						}
 						this.plugin.settings.timeToRemoveLeaf = time;
 						await this.plugin.saveData(this.plugin.settings);
-					}),
+					})
 			);
 	}
 }
