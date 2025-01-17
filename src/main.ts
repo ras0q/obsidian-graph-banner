@@ -60,7 +60,7 @@ export default class GraphBannerPlugin extends Plugin {
 					this.graphNode = graphNode;
 				}
 
-				const graphNode = await this.tryUntilNonNull(() => this.graphNode);
+				const graphNode = this.graphNode;
 				if (fileView.containerEl.contains(graphNode)) {
 					return;
 				}
@@ -70,13 +70,13 @@ export default class GraphBannerPlugin extends Plugin {
 				graphControls?.toggleClass("is-close", true);
 
 				const noteHeader = fileView.containerEl.find(".inline-title");
-				if (!noteHeader?.parentElement || !noteHeader?.nextSibling) {
+				if (!noteHeader?.parentElement) {
 					throw new Error("Failed to get note header");
 				}
 
-				noteHeader.parentElement.insertBefore(
+				noteHeader.parentElement.insertAfter(
 					graphNode,
-					noteHeader.nextSibling,
+					noteHeader,
 				);
 
 				this.registerEvent(
