@@ -1,5 +1,5 @@
 import ignore from "ignore";
-import { MarkdownView, Plugin, type WorkspaceLeaf } from "obsidian";
+import { FileView, MarkdownView, Plugin, type WorkspaceLeaf } from "obsidian";
 import { DEFAULT_SETTINGS, type Settings, SettingTab } from "./settings.ts";
 
 export default class GraphBannerPlugin extends Plugin {
@@ -36,70 +36,18 @@ export default class GraphBannerPlugin extends Plugin {
 					throw new Error("Failed to get file view");
 				}
 
-				if (!this.graphLeaf) {
-					this.graphLeaf = await this.createNewLeafForGraph();
-				}
+				await this.placeGraphBanner(fileView);
+			}),
+		);
 
-				this.graphLeaf.setViewState({
-					type: "localgraph",
-					state: {
-						file: file.path,
-					},
-				});
-
-				if (!this.graphNode) {
-					const graphNode = this.graphLeaf.view.containerEl.find(
-						".view-content",
-					);
-					if (!graphNode) {
-						throw new Error("Failed to get graph node");
-					}
-
-					graphNode.addClass(GraphBannerPlugin.graphBannerNodeClass);
-
-					this.graphNode = graphNode;
-				}
-
-				const graphNode = this.graphNode;
-				if (fileView.containerEl.contains(graphNode)) {
-					return;
-				}
-
-				// NOTE: close graph controls
-				const graphControls = graphNode.find(".graph-controls");
-				graphControls?.toggleClass("is-close", true);
-
-				const noteHeader = fileView.containerEl.find(".inline-title");
-				if (!noteHeader?.parentElement) {
-					throw new Error("Failed to get note header");
-				}
-
-				noteHeader.parentElement.insertAfter(
-					graphNode,
-					noteHeader,
+		this.registerEvent(
+			this.app.workspace.on("layout-change", async () => {
+				const fileView = this.app.workspace.getActiveViewOfType(
+					MarkdownView,
 				);
+				if (!fileView) return;
 
-				this.registerEvent(
-					this.app.workspace.on("layout-change", async () => {
-						const fileView = this.app.workspace.getActiveViewOfType(
-							MarkdownView,
-						);
-						if (!fileView) return;
-
-						const noteHeader = await this.tryUntilNonNull(() =>
-							fileView.containerEl.find(".inline-title")
-						);
-						if (!noteHeader.parentElement || !noteHeader.nextSibling) {
-							throw new Error("Failed to get note header");
-						}
-						if (noteHeader.parentElement.contains(graphNode)) return;
-
-						noteHeader.parentElement.insertBefore(
-							graphNode,
-							noteHeader.nextSibling,
-						);
-					}),
-				);
+				await this.placeGraphBanner(fileView);
 			}),
 		);
 	}
@@ -130,6 +78,43 @@ export default class GraphBannerPlugin extends Plugin {
 		}
 
 		throw new Error(`Failed to get result: ${f.toString().slice(0, 100)}...`);
+	}
+
+	private async placeGraphBanner(fileView: FileView) {
+		if (!this.graphLeaf) {
+			this.graphLeaf = await this.createNewLeafForGraph();
+		}
+
+		this.graphLeaf.setViewState({
+			type: "localgraph",
+			state: {
+				file: fileView.file!.path,
+			},
+		});
+
+		if (!this.graphNode) {
+			const graphNode = this.graphLeaf.view.containerEl.find(
+				".view-content",
+			);
+			if (!graphNode) {
+				throw new Error("Failed to get graph node");
+			}
+
+			graphNode.addClass(GraphBannerPlugin.graphBannerNodeClass);
+
+			this.graphNode = graphNode;
+		}
+
+		// NOTE: close graph controls
+		const graphControls = this.graphNode.find(".graph-controls");
+		graphControls?.toggleClass("is-close", true);
+
+		const noteHeader = fileView.containerEl.find(".inline-title");
+		const parent = noteHeader?.parentElement;
+		if (!parent) throw new Error("Failed to get note header");
+		if (parent.contains(this.graphNode)) return;
+
+		parent.insertAfter(this.graphNode, noteHeader);
 	}
 
 	private async createNewLeafForGraph() {
