@@ -19,7 +19,7 @@
 	},
 	"nodeModulesDir": "auto",
 	"tasks": {
-		"esbuild": "esbuild ./src/main.ts --bundle --external:obsidian --format=cjs --target=es6 --outfile=./main.js"
+		"esbuild": "esbuild ./src/main.ts --bundle --external:obsidian --format=cjs --target=es6 --outfile=./main.js",
 		"build": "deno task esbuild --minify",
 		"dev": "deno task esbuild --watch --sourcemap=inline"
 	}
