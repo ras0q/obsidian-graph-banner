@@ -8,7 +8,7 @@ export interface Settings {
 
 export const DEFAULT_SETTINGS: Settings = {
 	ignore: [],
-	timeToRemoveLeaf: 500,
+	timeToRemoveLeaf: 100,
 };
 
 export class SettingTab extends PluginSettingTab {
