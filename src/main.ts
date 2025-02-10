@@ -56,8 +56,7 @@ export default class GraphBannerPlugin extends Plugin {
 	}
 
 	private async placeGraphView(fileView: FileView) {
-		const isIgnoredPath = ignore
-			.default() // FIXME: ignore() is not a function?
+		const isIgnoredPath = ignore()
 			.add(this.settings.ignore)
 			.ignores(fileView.file!.path);
 
