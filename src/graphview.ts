@@ -42,6 +42,8 @@ export class GraphView {
 			},
 		});
 
+		this.leaf.setGroup(fileView.file!.path);
+
 		const noteHeader = fileView.containerEl.find(".inline-title");
 		const parent = noteHeader.parentElement;
 		if (!parent) throw "Failed to get note header";
