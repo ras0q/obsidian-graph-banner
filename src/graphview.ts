@@ -45,9 +45,12 @@ export class GraphView {
 		const noteHeader = fileView.containerEl.find(".inline-title");
 		const parent = noteHeader.parentElement;
 		if (!parent) throw "Failed to get note header";
-		if (parent.contains(this.node)) return;
 
 		parent.insertAfter(this.node, noteHeader);
+	}
+
+	isDescendantOf(parent: Node) {
+		return parent.contains(this.node);
 	}
 
 	setVisibility(show: boolean) {
