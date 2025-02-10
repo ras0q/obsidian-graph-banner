@@ -1,15 +1,12 @@
 import ignore from "ignore";
-import { FileView, MarkdownView, Plugin, type WorkspaceLeaf } from "obsidian";
+import { FileView, MarkdownView, Plugin } from "obsidian";
 import { DEFAULT_SETTINGS, type Settings, SettingTab } from "./settings.ts";
+import { GraphView } from "./graphview.ts";
 
 export default class GraphBannerPlugin extends Plugin {
-	static graphBannerNodeClass = "graph-banner-content";
-
 	settings: Settings = DEFAULT_SETTINGS;
 
-	unloadListeners: (() => void)[] = [];
-	graphLeaf: WorkspaceLeaf | null = null;
-	graphNode: Element | null = null;
+	graphView: GraphView | null = null;
 
 	override async onload() {
 		await this.loadSettings();
@@ -26,7 +23,7 @@ export default class GraphBannerPlugin extends Plugin {
 					.default() // FIXME: ignore() is not a function?
 					.add(this.settings.ignore)
 					.ignores(file.path);
-				this.graphNode?.toggleClass("hidden", isIgnoredPath);
+				this.graphView?.setVisibility(!isIgnoredPath);
 				if (isIgnoredPath) return;
 
 				const fileView = await this.tryUntilNonNull(() =>
@@ -36,7 +33,7 @@ export default class GraphBannerPlugin extends Plugin {
 					throw new Error("Failed to get file view");
 				}
 
-				await this.placeGraphBanner(fileView);
+				this.placeGraphBanner(fileView);
 			}),
 		);
 
@@ -55,14 +52,8 @@ export default class GraphBannerPlugin extends Plugin {
 	override onunload() {
 		console.log("Unloading GraphBannerPlugin");
 
-		this.graphLeaf?.detach();
-		this.graphLeaf = null;
-		this.graphNode?.removeClass(GraphBannerPlugin.graphBannerNodeClass);
-		this.graphNode = null;
-
-		for (const unloadCallback of this.unloadListeners) {
-			unloadCallback();
-		}
+		this.graphView?.detach();
+		this.graphView = null;
 	}
 
 	private async loadSettings() {
@@ -81,55 +72,10 @@ export default class GraphBannerPlugin extends Plugin {
 	}
 
 	private async placeGraphBanner(fileView: FileView) {
-		if (!this.graphLeaf) {
-			this.graphLeaf = await this.createNewLeafForGraph();
+		if (!this.graphView) {
+			this.graphView = new GraphView(this.app, this);
 		}
 
-		this.graphLeaf.setViewState({
-			type: "localgraph",
-			state: {
-				file: fileView.file!.path,
-			},
-		});
-
-		if (!this.graphNode) {
-			const graphNode = this.graphLeaf.view.containerEl.find(
-				".view-content",
-			);
-			if (!graphNode) {
-				throw new Error("Failed to get graph node");
-			}
-
-			graphNode.addClass(GraphBannerPlugin.graphBannerNodeClass);
-
-			this.graphNode = graphNode;
-		}
-
-		// NOTE: close graph controls
-		const graphControls = this.graphNode.find(".graph-controls");
-		graphControls?.toggleClass("is-close", true);
-
-		const noteHeader = fileView.containerEl.find(".inline-title");
-		const parent = noteHeader?.parentElement;
-		if (!parent) throw new Error("Failed to get note header");
-		if (parent.contains(this.graphNode)) return;
-
-		parent.insertAfter(this.graphNode, noteHeader);
-	}
-
-	private async createNewLeafForGraph() {
-		const leaf = this.app.workspace.getLeaf("tab");
-		await leaf.setViewState({
-			type: "localgraph",
-		});
-
-		// HACK: Don't detach(). Remove only child DOM manually.
-		// @ts-ignore WorkspaceTabs.removeChild is private method
-		const removeChild = () => leaf.parent.removeChild(leaf);
-		this.settings.timeToRemoveLeaf > 0
-			? setTimeout(removeChild, this.settings.timeToRemoveLeaf)
-			: removeChild();
-
-		return leaf;
+		await this.graphView.placeTo(fileView);
 	}
 }
