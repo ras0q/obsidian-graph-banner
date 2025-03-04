@@ -1,5 +1,5 @@
 import ignore from "ignore";
-import { FileView, MarkdownView, Plugin } from "obsidian";
+import { MarkdownView, Plugin } from "obsidian";
 import { DEFAULT_SETTINGS, type Settings, SettingTab } from "./settings.ts";
 import { GraphView } from "./graphview.ts";
 
@@ -19,25 +19,25 @@ export default class GraphBannerPlugin extends Plugin {
 			this.app.workspace.on("file-open", async (file) => {
 				if (!file || file.extension !== "md") return;
 
-				const fileView = this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (!fileView || fileView.file !== file) return;
+				const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+				if (!view || view.file !== file) return;
 
-				await this.placeGraphView(fileView);
+				await this.placeGraphView(view);
 			}),
 		);
 
 		this.registerEvent(
 			this.app.workspace.on("layout-change", async () => {
-				const fileView = this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (!fileView) return;
+				const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+				if (!view) return;
 
-				await this.placeGraphView(fileView);
+				await this.placeGraphView(view);
 			}),
 		);
 
 		const markdownLeaves = this.app.workspace.getLeavesOfType("markdown");
 		for (const leaf of markdownLeaves) {
-			this.placeGraphView(leaf.view as FileView);
+			this.placeGraphView(leaf.view as MarkdownView);
 		}
 	}
 
@@ -55,21 +55,21 @@ export default class GraphBannerPlugin extends Plugin {
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
 	}
 
-	private async placeGraphView(fileView: FileView) {
+	private async placeGraphView(view: MarkdownView) {
 		const isIgnoredPath = ignore()
 			.add(this.settings.ignore)
-			.ignores(fileView.file!.path);
+			.ignores(view.file!.path);
 
-		const graphView = this.findAvailableGraphView(fileView);
+		const graphView = this.findAvailableGraphView(view);
 		graphView.setVisibility(!isIgnoredPath);
-		await graphView.placeTo(fileView);
+		await graphView.placeTo(view);
 	}
 
-	private findAvailableGraphView(fileView: FileView) {
+	private findAvailableGraphView(view: MarkdownView) {
 		console.debug("this.graphViews.length", this.graphViews.length);
 
 		const descendantGraphView = this.graphViews.find((graphView) =>
-			graphView.isDescendantOf(fileView.containerEl)
+			graphView.isDescendantOf(view.containerEl)
 		);
 		if (descendantGraphView !== undefined) {
 			return descendantGraphView;

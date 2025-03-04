@@ -1,4 +1,4 @@
-import { App, FileView, WorkspaceLeaf } from "obsidian";
+import { App, MarkdownView, WorkspaceLeaf } from "obsidian";
 import GraphBannerPlugin from "./main.ts";
 
 export class GraphView {
@@ -9,7 +9,7 @@ export class GraphView {
 
 	setupLeafPromise: Promise<void>;
 
-	constructor(app: App, plugin: GraphBannerPlugin) {
+	public constructor(app: App, plugin: GraphBannerPlugin) {
 		this.leaf = app.workspace.getLeaf("tab");
 		this.setupLeafPromise = this.setupLeaf(plugin.settings.timeToRemoveLeaf);
 
@@ -32,19 +32,19 @@ export class GraphView {
 			: removeChild();
 	}
 
-	async placeTo(fileView: FileView) {
+	async placeTo(view: MarkdownView) {
 		await this.setupLeafPromise;
 
 		await this.leaf.setViewState({
 			type: "localgraph",
 			state: {
-				file: fileView.file!.path,
+				file: view.file!.path,
 			},
 		});
 
-		this.leaf.setGroup(fileView.file!.path);
+		this.leaf.setGroup(view.file!.path);
 
-		const noteHeader = fileView.containerEl.find(".inline-title");
+		const noteHeader = view.containerEl.find(".inline-title");
 		const parent = noteHeader.parentElement;
 		if (!parent) throw "Failed to get note header";
 
