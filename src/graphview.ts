@@ -44,7 +44,13 @@ export class GraphView {
 
 		this.leaf.setGroup(view.file!.path);
 
-		const noteHeader = view.containerEl.find(".inline-title");
+		const mode = view.getMode();
+		const modeContainer = view.containerEl.find(`.markdown-${mode}-view`);
+		if (this.isDescendantOf(modeContainer)) {
+			return;
+		}
+
+		const noteHeader = modeContainer.find(".inline-title");
 		const parent = noteHeader.parentElement;
 		if (!parent) throw "Failed to get note header";
 

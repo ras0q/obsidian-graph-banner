@@ -12,12 +12,24 @@ settings:
 
 */
 
+:root {
+	--banner-margin-bottom: 16px;
+}
+
 .graph-banner-content {
 	width: auto;
 	height: var(--banner-height, 20vh) !important;
-	margin-bottom: 16px;
+	margin-block-end: var(--banner-margin-bottom);
 }
 
 .hidden {
 	display: none;
+}
+
+/* Prevents layout shift */
+.inline-title:not(:has(+ .graph-banner-content)) {
+	margin-block-end: calc(
+		var(--banner-height, 20vh) + var(--banner-margin-bottom)
+			+ var(--inline-title-margin-bottom)
+	);
 }
