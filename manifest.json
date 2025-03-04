@@ -1,7 +1,7 @@
 {
 	"id": "graph-banner",
 	"name": "Graph Banner",
-	"version": "2.2.0",
+	"version": "2.2.1",
 	"minAppVersion": "1.7.2",
 	"description": "Display a local graph view to the note header",
 	"author": "ras0q",
