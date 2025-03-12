@@ -25,7 +25,7 @@ export class SettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName("Ignored Path Pattern")
+			.setName("Ignored path pattern")
 			.setDesc(
 				"Manage notes which do not display the graph banner. This pattern follows .gitignore spec.",
 			)
@@ -51,7 +51,7 @@ export class SettingTab extends PluginSettingTab {
 			)
 			.addText((text) =>
 				text
-					.setPlaceholder("500")
+					.setPlaceholder("100")
 					.setValue(String(this.plugin.settings.timeToRemoveLeaf))
 					.onChange(async (value) => {
 						const time = Number(value);
