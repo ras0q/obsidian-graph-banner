@@ -27,7 +27,9 @@ settings:
 }
 
 /* Prevents layout shift */
-.inline-title:not(.markdown-embed-content .inline-title):not(:has(+ .graph-banner-content)) {
+.inline-title:not(.markdown-embed-content .inline-title):not(
+	:has(+ .graph-banner-content)
+) {
 	margin-block-end: calc(
 		var(--banner-height, 20vh) + var(--banner-margin-bottom)
 			+ var(--inline-title-margin-bottom)
