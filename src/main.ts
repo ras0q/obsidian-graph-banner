@@ -42,8 +42,6 @@ export default class GraphBannerPlugin extends Plugin {
 	}
 
 	override onunload() {
-		console.log("Unloading GraphBannerPlugin");
-
 		for (const graphView of this.graphViews) {
 			graphView.detach();
 		}
@@ -66,8 +64,6 @@ export default class GraphBannerPlugin extends Plugin {
 	}
 
 	private findAvailableGraphView(view: MarkdownView) {
-		console.debug("this.graphViews.length", this.graphViews.length);
-
 		const descendantGraphView = this.graphViews.find((graphView) =>
 			graphView.isDescendantOf(view.containerEl)
 		);
