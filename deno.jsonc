@@ -13,9 +13,9 @@
 		"useTabs": true
 	},
 	"imports": {
-		"esbuild": "npm:esbuild@0.25.0",
-		"ignore": "npm:ignore@7.0.3",
-		"obsidian": "npm:obsidian@1.7.2"
+		"esbuild": "npm:esbuild@0.25.3",
+		"ignore": "npm:ignore@7.0.4",
+		"obsidian": "npm:obsidian@1.8.7"
 	},
 	"nodeModulesDir": "auto",
 	"tasks": {
