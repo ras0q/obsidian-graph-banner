@@ -3,9 +3,10 @@ import GraphBannerPlugin from "./main.ts";
 
 export class GraphView {
 	static nodeClass = "graph-banner-content";
+	static overlayNodeClass = "graph-banner-overlay";
 
 	leaf: WorkspaceLeaf;
-	node: Element;
+	node: HTMLElement;
 
 	setupLeafPromise: Promise<void>;
 
@@ -14,9 +15,8 @@ export class GraphView {
 		this.setupLeafPromise = this.setupLeaf(plugin.settings.timeToRemoveLeaf);
 
 		const node = this.leaf.view.containerEl.find(".view-content");
-		node.addClass(GraphView.nodeClass);
-		node.find(".graph-controls")?.toggleClass("is-close", true);
 		this.node = node;
+		this.setupNode();
 	}
 
 	private async setupLeaf(timeToRemoveLeaf: number) {
@@ -30,6 +30,37 @@ export class GraphView {
 		timeToRemoveLeaf > 0
 			? setTimeout(removeChild, timeToRemoveLeaf)
 			: removeChild();
+	}
+
+	setupNode() {
+		this.node.addClass(GraphView.nodeClass);
+		this.node.find(".graph-controls")?.toggleClass("is-close", true);
+
+		const overlay = document.createElement("div");
+		overlay.addClass(GraphView.overlayNodeClass);
+		this.node.insertBefore(overlay, this.node.querySelector("canvas"));
+		overlay.addEventListener("pointerup", () => {
+			if (this.isActive()) return;
+
+			this.setActive(true);
+
+			const abortController = new AbortController();
+			document.addEventListener("pointerdown", (e) => {
+				if (!this.isActive()) return;
+				if (e.target && this.node.contains(e.target as Node)) return;
+
+				this.setActive(false);
+				abortController.abort();
+			}, { signal: abortController.signal });
+		});
+	}
+
+	isActive() {
+		return this.node.dataset["interactive"] === "true";
+	}
+
+	setActive(active: boolean) {
+		this.node.dataset["interactive"] = active.toString();
 	}
 
 	async placeTo(view: MarkdownView) {
