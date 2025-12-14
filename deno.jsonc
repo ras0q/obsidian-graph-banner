@@ -15,7 +15,7 @@
 	"imports": {
 		"esbuild": "npm:esbuild@0.25.12",
 		"ignore": "npm:ignore@7.0.5",
-		"obsidian": "npm:obsidian@1.8.7"
+		"obsidian": "npm:obsidian@1.11.0"
 	},
 	"nodeModulesDir": "auto",
 	"tasks": {
