@@ -1,11 +1,11 @@
 {
-	"id": "graph-banner",
-	"name": "Graph Banner",
-	"version": "2.3.0",
-	"minAppVersion": "1.7.2",
-	"description": "Display a local graph view to the note header",
-	"author": "ras0q",
-	"authorUrl": "https://github.com/ras0q",
-	"fundingUrl": "https://buymeacoffee.com/ras0q",
-	"isDesktopOnly": false
+  "id": "graph-banner",
+  "name": "Graph Banner",
+  "version": "2.3.0",
+  "minAppVersion": "1.7.2",
+  "description": "Display a local graph view to the note header",
+  "author": "ras0q",
+  "authorUrl": "https://github.com/ras0q",
+  "fundingUrl": "https://buymeacoffee.com/ras0q",
+  "isDesktopOnly": false
 }

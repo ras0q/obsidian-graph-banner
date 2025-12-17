@@ -1,30 +1,27 @@
 {
-	"compilerOptions": {
-		"lib": [
-			"deno.window",
-			"dom"
-		]
-	},
-	"exclude": [
-		"node_modules",
-		"main.js"
-	],
-	"fmt": {
-		"useTabs": true
-	},
-	"imports": {
-		"@david/dax": "jsr:@david/dax@0.44.1",
-		"@std/semver": "jsr:@std/semver@1.0.7",
-		"esbuild": "npm:esbuild@0.27.2",
-		"ignore": "npm:ignore@7.0.5",
-		"obsidian": "npm:obsidian@1.11.0"
-	},
-	"nodeModulesDir": "auto",
-	"tasks": {
-		"build": "deno -A ./scripts/esbuild.config.ts production",
-		"dev": "deno -A ./scripts/esbuild.config.ts",
-		"check": "deno check . && deno fmt --check . && deno lint .",
-		"fix": "deno check . && deno fmt . && deno lint --fix .",
-		"bump": "deno -A ./scripts/bump-version.ts"
-	}
+  "compilerOptions": {
+    "lib": [
+      "deno.window",
+      "dom"
+    ]
+  },
+  "exclude": [
+    "node_modules",
+    "main.js"
+  ],
+  "imports": {
+    "@david/dax": "jsr:@david/dax@0.44.1",
+    "@std/semver": "jsr:@std/semver@1.0.7",
+    "esbuild": "npm:esbuild@0.27.2",
+    "ignore": "npm:ignore@7.0.5",
+    "obsidian": "npm:obsidian@1.11.0"
+  },
+  "nodeModulesDir": "auto",
+  "tasks": {
+    "build": "deno -A ./scripts/esbuild.config.ts production",
+    "dev": "deno -A ./scripts/esbuild.config.ts",
+    "check": "deno check . && deno fmt --check . && deno lint .",
+    "fix": "deno check . && deno fmt . && deno lint --fix .",
+    "bump": "deno -A ./scripts/bump-version.ts"
+  }
 }

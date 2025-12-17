@@ -1,8 +1,8 @@
 {
-	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"extends": [
-		"config:best-practices",
-		"default:automergePatch",
-		"github>Omochice/renovate-config:deno"
-	]
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices",
+    "default:automergePatch",
+    "github>Omochice/renovate-config:deno"
+  ]
 }

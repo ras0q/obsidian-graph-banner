@@ -13,39 +13,39 @@ settings:
 */
 
 :root {
-	--banner-margin-bottom: 16px;
+  --banner-margin-bottom: 16px;
 }
 
 .graph-banner-content {
-	width: auto;
-	height: var(--banner-height, 20vh) !important;
-	margin-block-end: var(--banner-margin-bottom);
-	border: 2px solid transparent;
+  width: auto;
+  height: var(--banner-height, 20vh) !important;
+  margin-block-end: var(--banner-margin-bottom);
+  border: 2px solid transparent;
 
-	& > .graph-banner-overlay {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-	}
+  & > .graph-banner-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
 
-	&[data-interactive="true"] {
-		border: 2px solid var(--color-accent);
-	}
-	&:not([data-interactive="true"]) > canvas {
-		pointer-events: none;
-	}
+  &[data-interactive="true"] {
+    border: 2px solid var(--color-accent);
+  }
+  &:not([data-interactive="true"]) > canvas {
+    pointer-events: none;
+  }
 }
 
 .hidden {
-	display: none;
+  display: none;
 }
 
 /* Prevents layout shift */
 .inline-title:not(.markdown-embed-content .inline-title):not(
-	:has(+ .graph-banner-content)
+  :has(+ .graph-banner-content)
 ) {
-	margin-block-end: calc(
-		var(--banner-height, 20vh) + var(--banner-margin-bottom)
-			+ var(--inline-title-margin-bottom)
-	);
+  margin-block-end: calc(
+    var(--banner-height, 20vh) + var(--banner-margin-bottom)
+      + var(--inline-title-margin-bottom)
+  );
 }
