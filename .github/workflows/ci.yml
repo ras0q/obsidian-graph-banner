@@ -15,19 +15,9 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      - run: deno install
+          cache: true
       - run: deno task build
-
-  check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
-      - uses: denoland/setup-deno@v2
-        with:
-          deno-version: v2.x
-      - run: deno check .
-      - run: deno fmt --check .
-      - run: deno lint .
+      - run: deno task check
 
   block-fixup:
     runs-on: ubuntu-latest

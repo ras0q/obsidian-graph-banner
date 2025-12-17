@@ -16,7 +16,6 @@
 		"@david/dax": "jsr:@david/dax@0.44.1",
 		"@std/semver": "jsr:@std/semver@1.0.7",
 		"esbuild": "npm:esbuild@0.27.2",
-		"globals": "npm:globals@16.5.0",
 		"ignore": "npm:ignore@7.0.5",
 		"obsidian": "npm:obsidian@1.11.0"
 	},

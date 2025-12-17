@@ -16,7 +16,6 @@
     "jsr:@std/semver@1.0.7": "1.0.7",
     "npm:@types/node@*": "24.2.0",
     "npm:esbuild@0.27.2": "0.27.2",
-    "npm:globals@16.5.0": "16.5.0",
     "npm:ignore@7.0.5": "7.0.5",
     "npm:obsidian@1.11.0": "1.11.0_@codemirror+state@6.5.0_@codemirror+view@6.38.6"
   },
@@ -284,9 +283,6 @@
       "scripts": true,
       "bin": true
     },
-    "globals@16.5.0": {
-      "integrity": "sha512-c/c15i26VrJ4IRt5Z89DnIzCGDn9EcebibhAOjw5ibqEHsE1wLUgkPn9RDmNcUKyU87GeaL633nyJ+pplFR2ZQ=="
-    },
     "ignore@7.0.5": {
       "integrity": "sha512-Hs59xBNfUIunMFgWAbGX5cq6893IbWg4KnrjbYwX3tx0ztorVgTDA6B2sxf8ejHJ4wz8BqGUMYlnzNBer5NvGg=="
     },
@@ -317,7 +313,6 @@
       "jsr:@david/dax@0.44.1",
       "jsr:@std/semver@1.0.7",
       "npm:esbuild@0.27.2",
-      "npm:globals@16.5.0",
       "npm:ignore@7.0.5",
       "npm:obsidian@1.11.0"
     ]
