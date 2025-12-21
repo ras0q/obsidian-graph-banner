@@ -20,7 +20,7 @@ await $`rm -rf ${distDir}`;
 await $`mkdir -p ${distDir}`;
 
 const context = await esbuild.context({
-  entryPoints: ["./src/main.ts", "./src/styles.css"],
+  entryPoints: ["./src/main.ts"],
   outdir: distDir.toString(),
   bundle: true,
   external: [
@@ -49,6 +49,7 @@ const context = await esbuild.context({
       name: "copy-manifest",
       setup(build) {
         build.onEnd(async () => {
+          await $`cp ./styles.css ${distDir}/styles.css`;
           await $`cp ./manifest.json ${distDir}/manifest.json`;
         });
       },
