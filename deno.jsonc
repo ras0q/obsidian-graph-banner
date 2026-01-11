@@ -14,7 +14,7 @@
     "@std/semver": "jsr:@std/semver@1.0.7",
     "esbuild": "npm:esbuild@0.27.2",
     "ignore": "npm:ignore@7.0.5",
-    "obsidian": "npm:obsidian@1.11.0"
+    "obsidian": "npm:obsidian@1.11.4"
   },
   "nodeModulesDir": "auto",
   "tasks": {
