@@ -10,7 +10,7 @@
     "main.js"
   ],
   "imports": {
-    "@david/dax": "jsr:@david/dax@0.45.0",
+    "@david/dax": "jsr:@david/dax@0.48.3",
     "@std/semver": "jsr:@std/semver@1.0.8",
     "esbuild": "npm:esbuild@0.27.7",
     "ignore": "npm:ignore@7.0.5",
