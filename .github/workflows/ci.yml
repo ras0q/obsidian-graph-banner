@@ -17,11 +17,8 @@ jobs:
           deno-version: v2.x
           cache: true
       - run: deno task build
-      - run: deno task check
-
-  block-fixup:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: 13rac1/block-fixup-merge-action@bd5504fb9ca0253e109d98eb86b7debc01970cdc # v2.0.0
+      - run: |
+          deno check .
+          deno fmt .
+          deno lint --fix .
+      - uses: autofix-ci/action@8bc06253bec489732e5f9c52884c7cace15c0160
