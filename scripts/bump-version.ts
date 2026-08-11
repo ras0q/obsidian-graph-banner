@@ -43,7 +43,7 @@ async function ensureBranchUpToDate() {
 }
 async function ensureCIPassed() {
   if (await $.commandExists("gh")) {
-    await $`gh workflow view CI`;
+    await $`gh workflow view autofix.ci`;
   }
   const prompt = "Have all CI checks passed for the latest commit? (y/N): ";
   const answer = (await $.prompt(prompt)).trim().toLowerCase();
@@ -75,8 +75,8 @@ if (import.meta.main) {
   console.log(
     "%cgit add manifest.json\n" +
       `git commit -m "Bump to ${manifest.version}"\n` +
-      `git tag -a ${manifest.version} -m "Release ${manifest.version}"\n` +
-      "git push origin main",
+      "git push origin master\n" +
+      "gh workflow run release.yml --ref master",
     "color: blue;",
   );
 }
