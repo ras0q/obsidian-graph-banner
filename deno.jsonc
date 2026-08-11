@@ -21,7 +21,6 @@
     "build": "deno -A ./scripts/esbuild.config.ts production",
     "dev": "deno -A ./scripts/esbuild.config.ts",
     "check": "deno check . && deno fmt --check . && deno lint .",
-    "fix": "deno check . && deno fmt . && deno lint --fix .",
-    "bump": "deno -A ./scripts/bump-version.ts"
+    "fix": "deno check . && deno fmt . && deno lint --fix ."
   }
 }
