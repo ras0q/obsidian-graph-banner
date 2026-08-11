@@ -10,11 +10,11 @@
     "main.js"
   ],
   "imports": {
-    "@david/dax": "jsr:@david/dax@0.45.0",
+    "@david/dax": "jsr:@david/dax@0.49.0",
     "@std/semver": "jsr:@std/semver@1.0.8",
-    "esbuild": "npm:esbuild@0.27.7",
-    "ignore": "npm:ignore@7.0.5",
-    "obsidian": "npm:obsidian@1.12.3"
+    "esbuild": "npm:esbuild@0.28.2",
+    "ignore": "npm:ignore@7.0.6",
+    "obsidian": "npm:obsidian@1.13.1"
   },
   "nodeModulesDir": "auto",
   "tasks": {
