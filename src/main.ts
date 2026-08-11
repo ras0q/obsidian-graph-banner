@@ -3,8 +3,12 @@ import { MarkdownView, Plugin } from "obsidian";
 import { DEFAULT_SETTINGS, type Settings, SettingTab } from "./settings.ts";
 import { GraphView } from "./graphview.ts";
 
+type LegacySettings = Omit<Partial<Settings>, "ignore"> & {
+  ignore?: string | string[];
+};
+
 export default class GraphBannerPlugin extends Plugin {
-  settings: Settings = DEFAULT_SETTINGS;
+  override settings: Settings = DEFAULT_SETTINGS;
 
   graphViews: GraphView[] = [];
 
@@ -50,7 +54,16 @@ export default class GraphBannerPlugin extends Plugin {
   }
 
   private async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    const loadedSettings = await this.loadData() as LegacySettings | null;
+
+    this.settings = {
+      ...DEFAULT_SETTINGS,
+      ...loadedSettings,
+      // Previous versions persisted one ignore pattern per array item.
+      ignore: Array.isArray(loadedSettings?.ignore)
+        ? loadedSettings.ignore.join("\n")
+        : loadedSettings?.ignore ?? DEFAULT_SETTINGS.ignore,
+    };
   }
 
   private async placeGraphView(view: MarkdownView) {

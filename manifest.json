@@ -2,7 +2,7 @@
   "id": "graph-banner",
   "name": "Graph Banner",
   "version": "2.3.3",
-  "minAppVersion": "1.7.2",
+  "minAppVersion": "1.13.0",
   "description": "Display a local graph view to the note header",
   "author": "ras0q",
   "authorUrl": "https://github.com/ras0q",
