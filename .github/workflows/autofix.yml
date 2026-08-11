@@ -1,4 +1,4 @@
-name: CI
+name: autofix.ci
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
@@ -17,8 +17,7 @@ jobs:
           deno-version: v2.x
           cache: true
       - run: deno task build
-      - run: |
-          deno check .
-          deno fmt .
-          deno lint --fix .
+      - run: deno check .
+      - run: deno fmt .
+      - run: deno lint --fix .
       - uses: autofix-ci/action@8bc06253bec489732e5f9c52884c7cace15c0160
