@@ -6,8 +6,8 @@
     "jsr:@david/path@0.3": "0.3.4",
     "jsr:@david/path@~0.3.2": "0.3.4",
     "jsr:@david/shell@0.6": "0.6.0",
-    "jsr:@david/which@0.7": "0.7.4",
-    "jsr:@david/which@~0.7.1": "0.7.4",
+    "jsr:@david/which@0.7": "0.7.5",
+    "jsr:@david/which@~0.7.1": "0.7.5",
     "jsr:@std/bytes@^1.0.6": "1.0.6",
     "jsr:@std/fmt@1": "1.0.10",
     "jsr:@std/internal@^1.0.14": "1.0.14",
@@ -50,8 +50,8 @@
         "jsr:@std/path@1"
       ]
     },
-    "@david/which@0.7.4": {
-      "integrity": "b4ed8e7f489b3689afb4b8315944211c807f91c03229e48ab888e55336c73087"
+    "@david/which@0.7.5": {
+      "integrity": "c3083b4463f152c56cc6d00f54bfdfcf6e9f93059f16e6e39f22b7b3e8e17d99"
     },
     "@std/bytes@1.0.6": {
       "integrity": "f6ac6adbd8ccd99314045f5703e23af0a68d7f7e58364b47d2c7f408aeb5820a"
@@ -233,8 +233,8 @@
         "@types/tern"
       ]
     },
-    "@types/estree@1.0.9": {
-      "integrity": "sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg=="
+    "@types/estree@1.0.10": {
+      "integrity": "sha512-lTyOMnOcmRBzdCv6/4zUZCrEhV0xrqQiUZBZtVcbmLHBXKLnN8q89v/wKRF/Q0HbwVsqbIG3o5HDoFl9sduM+g=="
     },
     "@types/tern@0.23.9": {
       "integrity": "sha512-ypzHFE/wBzh+BlH6rrBgS5I/Z7RD21pGhZ2rltb/+ZrVM1awdZwjx7hE5XfuYgHWk9uvV5HLZN3SloevCAp3Bw==",
